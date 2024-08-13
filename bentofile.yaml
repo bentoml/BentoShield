@@ -1,0 +1,14 @@
+service: "service:ShieldAssistant"
+labels:
+  owner: bentoml-team
+  stage: demo
+include:
+  - "*.py"
+python:
+  requirements_txt: "./requirements.txt"
+  lock_packages: true
+envs:
+  - name: OPENAI_API_KEY
+  - name: OPENAI_BASE_URL
+docker:
+  python_version: 3.11
