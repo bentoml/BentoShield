@@ -1,3 +1,4 @@
+name: bentoshield-assistant
 service: "service:ShieldAssistant"
 labels:
   owner: bentoml-team
@@ -8,6 +9,7 @@ python:
   requirements_txt: "./requirements.txt"
   lock_packages: true
 envs:
+  - name: HF_TOKEN
   - name: OPENAI_API_KEY
   - name: OPENAI_BASE_URL
 docker:

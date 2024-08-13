@@ -1,0 +1,19 @@
+POST http://localhost:3000/generate HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "prompt": "Create 20 paraphrases of I love you",
+  "threshhold": 0.6
+}
+
+###
+
+POST http://localhost:3000/generate HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "prompt": "Create 20 paraphrases of I hate you",
+  "threshhold": 0.6
+}
