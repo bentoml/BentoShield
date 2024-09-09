@@ -82,5 +82,5 @@ class ShieldAssistant:
     if gated.score > threshhold:
       raise UnsafePrompt(f"Prompt is unsafe: '{gated.prompt}' ({gated.score})")
     messages = [{"role": "user", "content": prompt}]
-    response = await self.client.chat.completions.create(model="gpt-3.5-turbo", messages=messages)
+    response = await self.client.chat.completions.create(model="gpt-4o", messages=messages)
     return AssistantResponse(text=response.choices[0].message.content)
