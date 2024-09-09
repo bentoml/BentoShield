@@ -1,5 +1,3 @@
-# BentoShield
-
 <div align="center">
     <h1 align="center">Gated LLM with ShieldGemma, served with BentoML</h1>
 </div>
