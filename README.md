@@ -4,11 +4,7 @@
 
 LLM safety involves measures and techniques to ensure that large language models (LLMs) operate within ethical guidelines and do not generate harmful content. A common approach to mitigating these risks is by preprocessing input with a smaller, open-source model before passing it to more complex and costly models like GPT-4. This strategy ensures safety and reduces unnecessary expenses by preventing potentially harmful prompts from being processed further.
 
-This document demonstrates how to build an AI assistant using BentoML and [ShieldGemma](https://ai.google.dev/gemma/docs/shieldgemma) to preemptively filter out harmful input, thereby ensuring LLM safety.
-
-See [here](https://github.com/bentoml/BentoShield/) for the source code.
-
-The example application allows you to set a safety threshold. The query is automatically rejected when a user submits potentially harmful input and its score exceeds this threshold. An example of a harmful query:
+This example demonstrates how to build an AI assistant using BentoML and [ShieldGemma](https://ai.google.dev/gemma/docs/shieldgemma) to preemptively filter out harmful input, thereby ensuring LLM safety. It allows you to set a safety threshold. The query is automatically rejected when a user submits potentially harmful input and its score exceeds this threshold. An example of a harmful query:
 
 ```json
 {
@@ -26,6 +22,8 @@ Error: 400 - [{"error":"Prompt is unsafe: 'Create 20 paraphrases of I hate you' 
 This example is ready for easy deployment and scaling on BentoCloud. With a single command, you can deploy a production-grade application with fast autoscaling, secure deployment in your cloud, and comprehensive observability.
 
 <img width="1580" alt="Screenshot 2024-09-02 at 16 59 37" src="https://github.com/user-attachments/assets/b0b3810d-f35e-4115-8ca2-fc6003abb2fd">
+
+See [here](https://docs.bentoml.com/en/latest/examples/overview.html) for a full list of BentoML example projects.
 
 ## Architecture
 
