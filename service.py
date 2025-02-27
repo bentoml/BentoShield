@@ -1,6 +1,5 @@
 from __future__ import annotations
-import bentoml
-import pydantic
+import bentoml, pydantic
 from openai import AsyncOpenAI
 
 MODEL_ID = "google/shieldgemma-2b"
@@ -33,14 +32,17 @@ class AssistantResponse(pydantic.BaseModel):
 
 
 @bentoml.service(
-  resources={"memory": "4Gi", "gpu": 1, "gpu_type": "nvidia-tesla-t4"}, traffic={"concurrency": 5, "timeout": 300}
+  resources={"memory": "4Gi", "gpu": 1, "gpu_type": "nvidia-tesla-t4"}, traffic={"concurrency": 5, "timeout": 300},
+  image=bentoml.images.PythonImage(python_version='3.11').requirements_file('requirements.txt'),
 )
 class Gemma:
+  model = bentoml.models.HuggingFaceModel(MODEL_ID)
+
   def __init__(self):
     import torch
     from transformers import AutoTokenizer, AutoModelForCausalLM
 
-    self.model = AutoModelForCausalLM.from_pretrained(MODEL_ID, device_map="auto", torch_dtype=torch.bfloat16)
+    self.model = AutoModelForCausalLM.from_pretrained(self.model, device_map="auto", torch_dtype=torch.float16)
     self.tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
 
   @bentoml.api
@@ -63,11 +65,15 @@ class Gemma:
     return ShieldResponse(score=probabilities[0].item(), prompt=prompt)
 
 
-class UnsafePrompt(bentoml.exceptions.InvalidArgument):
-  pass
+class UnsafePrompt(bentoml.exceptions.InvalidArgument): pass
 
 
-@bentoml.service(resources={"cpu": "1"})
+@bentoml.service(
+    name='bentoshield-assistant',
+    resources={"cpu": "1"},
+    envs=[{'name': 'HF_TOKEN'}, {'name': 'OPENAI_API_KEY'}, {'name': 'OPENAI_BASE_URL'}],
+    labels={'owner': 'bentoml-team', 'type': 'demo'},
+    )
 class ShieldAssistant:
   shield = bentoml.depends(Gemma)
 
