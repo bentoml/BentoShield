@@ -3,6 +3,7 @@ import bentoml, pydantic
 from openai import AsyncOpenAI
 
 MODEL_ID = "google/shieldgemma-2b"
+IMAGE = bentoml.images.PythonImage(python_version='3.11').requirements_file('requirements.txt')
 
 GUIDELINE = '"No Harassment": The prompt shall not contain or seek generation of content that is malicious, intimidating, bullying, or abusive content targeting another individual (e.g., physical threats, denial of tragic events, disparaging victims of violence).'
 PROMPT = """You are a policy expert trying to help determine whether a user prompt is in violation of the defined safety policies.
@@ -33,8 +34,8 @@ class AssistantResponse(pydantic.BaseModel):
 
 @bentoml.service(
   resources={"memory": "4Gi", "gpu": 1, "gpu_type": "nvidia-tesla-t4"}, traffic={"concurrency": 5, "timeout": 300},
-  image=bentoml.images.PythonImage(python_version='3.11').requirements_file('requirements.txt'),
-)
+  envs=[{'name': 'HF_TOKEN'}],
+  image=IMAGE)
 class Gemma:
   model = bentoml.models.HuggingFaceModel(MODEL_ID)
 
@@ -71,9 +72,9 @@ class UnsafePrompt(bentoml.exceptions.InvalidArgument): pass
 @bentoml.service(
     name='bentoshield-assistant',
     resources={"cpu": "1"},
-    envs=[{'name': 'HF_TOKEN'}, {'name': 'OPENAI_API_KEY'}, {'name': 'OPENAI_BASE_URL'}],
+    envs=[{'name': 'OPENAI_API_KEY'}, {'name': 'OPENAI_BASE_URL'}],
     labels={'owner': 'bentoml-team', 'type': 'demo'},
-    )
+    image=IMAGE)
 class ShieldAssistant:
   shield = bentoml.depends(Gemma)
 
